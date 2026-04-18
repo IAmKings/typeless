@@ -1,33 +1,30 @@
 /**
- * This file will automatically be loaded by vite and run in the "renderer" context.
- * To learn more about the differences between the "main" and the "renderer" context in
- * Electron, visit:
+ * Renderer Process Entry Point
  *
- * https://electronjs.org/docs/tutorial/process-model
- *
- * By default, Node.js integration in this file is disabled. When enabling Node.js integration
- * in a renderer process, please be aware of potential security implications. You can read
- * more about security risks here:
- *
- * https://electronjs.org/docs/tutorial/security
- *
- * To enable Node.js integration in this file, open up `main.ts` and enable the `nodeIntegration`
- * flag:
- *
- * ```
- *  // Create the browser window.
- *  mainWindow = new BrowserWindow({
- *    width: 800,
- *    height: 600,
- *    webPreferences: {
- *      nodeIntegration: true
- *    }
- *  });
- * ```
+ * Initializes renderer-side services and sets up the application.
+ * Uses contextBridge (via preload) for IPC communication with main process.
  */
 
-import './index.css';
+import "./index.css";
+import { audioCapture } from "./renderer/services/audio-capture";
 
-console.log(
-  '👋 This message is being logged by "renderer.ts", included via Vite',
-);
+console.log("[Renderer] Application starting...");
+
+// Expose audio capture API on window for main process coordination
+// The main process uses webContents.executeJavaScript to call these functions
+declare global {
+  interface Window {
+    __audioCapture: {
+      startCapture: (deviceId?: string) => Promise<{ success: boolean; error?: string }>;
+      stopCapture: () => Promise<{ success: boolean }>;
+      getDevices: () => Promise<import("./renderer/services/audio.service").AudioDeviceInfo[]>;
+      getLevel: () => number;
+      isRecording: () => boolean;
+    };
+  }
+}
+
+window.__audioCapture = audioCapture;
+
+// Log startup
+console.log("[Renderer] Audio capture bridge initialized");

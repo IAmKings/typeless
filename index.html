@@ -2,12 +2,190 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Hello World!</title>
-
+    <title>Voice Input Test</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        padding: 20px;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      h1 { color: #333; }
+      .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+      .section h2 { margin-top: 0; color: #666; font-size: 16px; }
+      button {
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.2s;
+      }
+      button.primary { background: #007AFF; color: white; }
+      button.primary:hover { background: #0056b3; }
+      button.danger { background: #FF3B30; color: white; }
+      button.danger:hover { background: #d32f2f; }
+      button:disabled { opacity: 0.5; cursor: not-allowed; }
+      #log {
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: 15px;
+        border-radius: 6px;
+        font-family: 'SF Mono', Monaco, monospace;
+        font-size: 12px;
+        max-height: 300px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+      }
+      .log-info { color: #4fc3f7; }
+      .log-success { color: #66bb6a; }
+      .log-error { color: #ef5350; }
+      .log-warn { color: #ffa726; }
+      #devices { margin: 10px 0; }
+      #devices select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+      }
+      #level-bar {
+        height: 20px;
+        background: #e0e0e0;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 10px;
+      }
+      #level-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #4caf50, #ffeb3b, #f44336);
+        width: 0%;
+        transition: width 0.05s;
+      }
+    </style>
   </head>
   <body>
-    <h1>💖 Hello World!</h1>
-    <p>Welcome to your Electron application.</p>
+    <h1>🎤 Voice Input Test</h1>
+
+    <div class="section">
+      <h2>📋 Devices</h2>
+      <button id="btnGetDevices" class="primary">Get Devices</button>
+      <div id="devices">
+        <select id="deviceSelect" style="display:none">
+          <option value="">Select a microphone...</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🔴 Recording</h2>
+      <button id="btnStart" class="primary">Start Recording</button>
+      <button id="btnStop" class="danger" disabled>Stop Recording</button>
+      <div id="level-bar"><div id="level-fill"></div></div>
+    </div>
+
+    <div class="section">
+      <h2>📝 Log</h2>
+      <div id="log"></div>
+    </div>
+
     <script type="module" src="/src/renderer.ts"></script>
+    <script>
+      const logEl = document.getElementById('log');
+      const deviceSelect = document.getElementById('deviceSelect');
+      const levelFill = document.getElementById('level-fill');
+      const btnGetDevices = document.getElementById('btnGetDevices');
+      const btnStart = document.getElementById('btnStart');
+      const btnStop = document.getElementById('btnStop');
+
+      function log(message, type = 'info') {
+        const prefix = {
+          info: 'ℹ️',
+          success: '✅',
+          error: '❌',
+          warn: '⚠️'
+        }[type];
+        const line = document.createElement('div');
+        line.className = `log-${type}`;
+        line.textContent = `${prefix} ${new Date().toLocaleTimeString()} ${message}`;
+        logEl.appendChild(line);
+        logEl.scrollTop = logEl.scrollHeight;
+      }
+
+      // Update level bar
+      window.updateLevel = (level) => {
+        levelFill.style.width = `${level}%`;
+      };
+
+      // Get devices
+      btnGetDevices.addEventListener('click', async () => {
+        log('Getting audio devices...');
+        try {
+          const devices = await window.api.audio.getDevices();
+          log(`Found ${devices.length} device(s)`, 'success');
+          deviceSelect.innerHTML = '<option value="">Select a microphone...</option>';
+          devices.forEach((d, i) => {
+            const opt = document.createElement('option');
+            opt.value = d.deviceId;
+            opt.textContent = `${d.label}${d.isDefault ? ' (Default)' : ''}`;
+            deviceSelect.appendChild(opt);
+          });
+          deviceSelect.style.display = 'block';
+        } catch (err) {
+          log(`Error: ${err.message}`, 'error');
+        }
+      });
+
+      // Start recording
+      btnStart.addEventListener('click', async () => {
+        const deviceId = deviceSelect.value || undefined;
+        log(`Starting recording${deviceId ? ` with device: ${deviceId}` : ' (default)'}...`);
+        try {
+          const result = await window.api.audio.startRecording(deviceId ? { deviceId } : {});
+          if (result.success) {
+            log('Recording started!', 'success');
+            btnStart.disabled = true;
+            btnStop.disabled = false;
+            btnGetDevices.disabled = true;
+          } else {
+            log(`Failed: ${result.error}`, 'error');
+          }
+        } catch (err) {
+          log(`Error: ${err.message}`, 'error');
+        }
+      });
+
+      // Stop recording
+      btnStop.addEventListener('click', async () => {
+        log('Stopping recording...');
+        try {
+          await window.api.audio.stopRecording();
+          log('Recording stopped', 'success');
+          btnStart.disabled = false;
+          btnStop.disabled = true;
+          btnGetDevices.disabled = false;
+          levelFill.style.width = '0%';
+        } catch (err) {
+          log(`Error: ${err.message}`, 'error');
+        }
+      });
+
+      // Subscribe to audio level
+      window.api.audio.onLevel((level) => {
+        window.updateLevel(level);
+      });
+
+      // Subscribe to audio data (for ASR)
+      window.api.audio.onAudioData((data) => {
+        log(`Audio data received: ${data.byteLength} bytes`, 'warn');
+      });
+
+      // Subscribe to audio errors
+      window.api.audio.onError((error) => {
+        log(`Audio error [${error.code}]: ${error.message}`, 'error');
+      });
+
+      log('UI initialized. Click "Get Devices" to start.');
+    </script>
   </body>
 </html>

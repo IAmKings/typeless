@@ -50,8 +50,8 @@ contextBridge.exposeInMainWorld("api", {
 
   // ============== Audio ==============
   audio: {
-    startRecording: (): Promise<{ success: boolean }> =>
-      ipcRenderer.invoke(IPC_CHANNELS.AUDIO.START_RECORDING),
+    startRecording: (options?: { deviceId?: string }): Promise<{ success: boolean; error?: string }> =>
+      ipcRenderer.invoke(IPC_CHANNELS.AUDIO.START_RECORDING, options),
 
     stopRecording: (): Promise<{ success: boolean }> =>
       ipcRenderer.invoke(IPC_CHANNELS.AUDIO.STOP_RECORDING),
@@ -61,6 +61,25 @@ contextBridge.exposeInMainWorld("api", {
 
     onLevel: (callback: (level: number) => void): (() => void) =>
       createListener<number>(IPC_CHANNELS.AUDIO.ON_LEVEL)(callback),
+
+    onAudioData: (callback: (data: ArrayBuffer) => void): (() => void) =>
+      createListener<ArrayBuffer>(IPC_CHANNELS.AUDIO.ON_AUDIO_DATA)(callback),
+
+    onError: (callback: (error: { code: string; message: string }) => void): (() => void) =>
+      createListener<{ code: string; message: string }>(IPC_CHANNELS.AUDIO.ON_ERROR)(callback),
+
+    // Internal: renderer -> main for audio data streaming
+    pushAudioData: (data: ArrayBuffer): void => {
+      ipcRenderer.send(IPC_CHANNELS.AUDIO.PUSH_AUDIO_DATA, data);
+    },
+
+    pushAudioLevel: (level: number): void => {
+      ipcRenderer.send(IPC_CHANNELS.AUDIO.ON_LEVEL, level);
+    },
+
+    pushAudioError: (code: string, message: string): void => {
+      ipcRenderer.send(IPC_CHANNELS.AUDIO.ON_ERROR, { code, message });
+    },
   },
 
   // ============== Hotkey ==============
@@ -140,10 +159,15 @@ declare global {
         onConnectionStatus: (callback: (status: ConnectionStatus) => void) => () => void;
       };
       audio: {
-        startRecording: () => Promise<{ success: boolean }>;
+        startRecording: (options?: { deviceId?: string }) => Promise<{ success: boolean; error?: string }>;
         stopRecording: () => Promise<{ success: boolean }>;
         getDevices: () => Promise<AudioDevice[]>;
         onLevel: (callback: (level: number) => void) => () => void;
+        onAudioData: (callback: (data: ArrayBuffer) => void) => () => void;
+        onError: (callback: (error: { code: string; message: string }) => void) => () => void;
+        pushAudioData: (data: ArrayBuffer) => void;
+        pushAudioLevel: (level: number) => void;
+        pushAudioError: (code: string, message: string) => void;
       };
       hotkey: {
         register: (shortcut: string) => Promise<boolean>;

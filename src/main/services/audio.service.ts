@@ -1,15 +1,16 @@
 /**
- * Audio Service - macOS audio capture
+ * Audio Service (Main Process) - State management
  *
- * TODO: Implement with AVAudioEngine for real-time capture
+ * The actual audio capture is performed in the renderer process using
+ * navigator.mediaDevices.getUserMedia. This main process service
+ * provides shared state that both the handler and other services can use.
  *
- * @see macos-permissions.md for permission handling
+ * @see ../renderer/services/audio.service.ts for the renderer implementation
  */
 
 import { z } from "zod";
-import type { AudioDevice } from "../types/asr";
 
-// ============= Audio Device Schema =============
+// ============= Schema =============
 
 export const audioDeviceSchema = z.object({
   deviceId: z.string(),
@@ -17,62 +18,34 @@ export const audioDeviceSchema = z.object({
   isDefault: z.boolean(),
 });
 
-// ============= Service State =============
+// ============= Shared State =============
 
 let isRecording = false;
 let currentAudioLevel = 0;
+let currentDeviceId: string | undefined = undefined;
+
+// ============= State Management =============
 
 /**
- * Start recording audio
- *
- * TODO: Implement using AVAudioEngine
- * - Create AVAudioEngine
- * - Attach input node
- * - Install tap on input node for real-time audio
- * - Return audio buffers via callback to ASR handler
+ * Update the current audio level (0-100)
  */
-export async function startRecording(): Promise<void> {
-  if (isRecording) {
-    throw new Error("Already recording");
-  }
-
-  isRecording = true;
-  console.log("[Audio Service] Starting recording...");
+export function updateAudioLevel(level: number): void {
+  currentAudioLevel = level;
 }
 
 /**
- * Stop recording audio
+ * Update recording state
  */
-export async function stopRecording(): Promise<void> {
-  if (!isRecording) {
-    return;
+export function setRecordingState(recording: boolean, deviceId?: string): void {
+  isRecording = recording;
+  currentDeviceId = deviceId;
+  if (!recording) {
+    currentAudioLevel = 0;
   }
-
-  isRecording = false;
-  currentAudioLevel = 0;
-  console.log("[Audio Service] Stopping recording...");
-}
-
-/**
- * Get available audio input devices
- *
- * TODO: Implement using Core Audio to enumerate devices
- */
-export async function getAudioDevices(): Promise<AudioDevice[]> {
-  // Placeholder implementation
-  return [
-    {
-      deviceId: "default",
-      label: "Default Microphone",
-      isDefault: true,
-    },
-  ];
 }
 
 /**
  * Get current audio input level (0-100)
- *
- * TODO: Return actual RMS level from AVAudioEngine
  */
 export function getCurrentLevel(): number {
   return currentAudioLevel;
@@ -83,4 +56,20 @@ export function getCurrentLevel(): number {
  */
 export function isCurrentlyRecording(): boolean {
   return isRecording;
+}
+
+/**
+ * Get current device ID
+ */
+export function getCurrentDeviceId(): string | undefined {
+  return currentDeviceId;
+}
+
+/**
+ * Reset recording state
+ */
+export function resetRecordingState(): void {
+  isRecording = false;
+  currentDeviceId = undefined;
+  currentAudioLevel = 0;
 }

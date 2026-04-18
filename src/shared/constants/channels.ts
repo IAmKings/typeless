@@ -21,7 +21,11 @@ export const IPC_CHANNELS = {
     START_RECORDING: "audio:startRecording",
     STOP_RECORDING: "audio:stopRecording",
     ON_LEVEL: "audio:onLevel",
+    ON_AUDIO_DATA: "audio:onAudioData",
+    ON_ERROR: "audio:onError",
     GET_DEVICES: "audio:getDevices",
+    // Internal: renderer -> main for audio data forwarding
+    PUSH_AUDIO_DATA: "audio:pushAudioData",
   },
 
   // Global hotkey

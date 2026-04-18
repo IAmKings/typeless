@@ -1,0 +1,7 @@
+{"file": ".trellis/workflow.md", "reason": "Project workflow and conventions"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend development guide"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend development guide"}
+{"file": ".trellis/spec/backend/macos-permissions.md", "reason": "麦克风权限处理必须遵循 macOS 规范"}
+{"file": ".trellis/spec/frontend/ipc-electron.md", "reason": "音频采集需要 IPC 通信"}
+{"file": ".trellis/spec/big-question/native-module-packaging.md", "reason": "音频采集可能涉及原生模块打包"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "音频采集涉及主进程、渲染进程、IPC 多层交互"}
