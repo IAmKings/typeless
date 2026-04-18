@@ -1,0 +1,5 @@
+{"file": ".trellis/workflow.md", "reason": "Project workflow and conventions"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend development guide"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend development guide"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "管道涉及音频采集→ASR→文本输出的多层数据流"}
+{"file": ".trellis/spec/big-question/global-keyboard-hooks.md", "reason": "全局快捷键触发音频采集"}

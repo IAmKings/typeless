@@ -54,8 +54,4 @@ export interface AudioLevel {
   timestamp: number;
 }
 
-// ============= Re-export from main types =============
-
-// Re-export for convenience - these are used by other modules
-// Note: AudioDevice is defined in this file directly
-export type { AudioDevice } from "./audio.service";
+// Note: AudioDevice is already defined and exported above

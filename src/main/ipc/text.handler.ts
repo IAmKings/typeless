@@ -38,7 +38,7 @@ function checkAccessibility(): TextInjectionResult {
 /**
  * Inject text into the currently focused application
  */
-ipcMain.handle(IPC_CHANNELS.TEXT.INJECT, async (_event, text: string): Promise<TextInjectionResult> => {
+async function doInjectText(text: string): Promise<TextInjectionResult> {
   // Check accessibility permission first
   const check = checkAccessibility();
   if (!check.success) {
@@ -61,4 +61,14 @@ ipcMain.handle(IPC_CHANNELS.TEXT.INJECT, async (_event, text: string): Promise<T
       error: `Text injection failed: ${message}`,
     };
   }
+}
+
+// IPC handler
+ipcMain.handle(IPC_CHANNELS.TEXT.INJECT, async (_event, text: string): Promise<TextInjectionResult> => {
+  return doInjectText(text);
 });
+
+// Export for internal use (e.g., pipeline)
+export async function injectText(text: string): Promise<TextInjectionResult> {
+  return doInjectText(text);
+}

@@ -15,6 +15,7 @@ import {
 import { getASRConfig, hasASRConfig } from "../services/asr/config";
 import { asrConfigSchema } from "../services/asr/types";
 import type { ASRConfig, TranscriptResult, ConnectionStatus } from "../services/asr/types";
+import { injectText } from "./text.handler";
 
 // ============= Logging =============
 
@@ -57,8 +58,14 @@ ipcMain.handle(IPC_CHANNELS.ASR.CONNECT, async (_event, rawConfig: unknown): Pro
   try {
     // Set up event callbacks
     const events = {
-      onTranscript: (result: TranscriptResult) => {
+      onTranscript: async (result: TranscriptResult) => {
         notifyRenderer(IPC_CHANNELS.ASR.ON_TRANSCRIPT, result);
+
+        // Pipeline: Auto-inject text when final transcript arrives
+        if (result.isFinal && result.text.trim()) {
+          log.info(`Pipeline: Injecting final transcript (${result.text.length} chars)`);
+          await injectText(result.text);
+        }
       },
       onError: (error: { code: string; message: string }) => {
         notifyRenderer(IPC_CHANNELS.ASR.ON_ERROR, error);
