@@ -1,7 +1,7 @@
 {
-  "id": "T3-ipc-channels",
-  "name": "T3-ipc-channels",
-  "title": "macOS 语音输入应用 - T3: IPC 通道设计",
+  "id": "T2-websocket-client",
+  "name": "T2-websocket-client",
+  "title": "macOS 语音输入应用 - T2: WebSocket 客户端封装",
   "description": "",
   "status": "planning",
   "dev_type": null,
