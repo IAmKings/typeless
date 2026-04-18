@@ -72,3 +72,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 3: T1 音频采集模块实现完成
+
+**Date**: 2026-04-18
+**Task**: T1 音频采集模块实现完成
+**Branch**: `master`
+
+### Summary
+
+实现 macOS 语音输入应用的音频采集模块。使用 getUserMedia + AudioContext 在渲染进程实现实时音频采集，输出 PCM 16kHz/16bit/mono 格式。支持设备枚举、音量监测（50ms）、音频数据推送（100ms）、设备切换。添加测试 UI 页面。修复 package.json 中 electron 依赖位置问题。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `c0beb93` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
