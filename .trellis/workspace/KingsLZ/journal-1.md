@@ -138,3 +138,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 5: T4 火山引擎 ASR API 集成完成
+
+**Date**: 2026-04-19
+**Task**: T4 火山引擎 ASR API 集成完成
+**Branch**: `master`
+
+### Summary
+
+完成 ASR REST API 集成、环境配置加载器、UI 状态显示。新增 api.ts 实现 validateConfig/healthCheck，新增 config.ts 从 .env 读取配置，更新 index.html 添加 ASR 状态指示器和 Connect/Disconnect 按钮。添加 README.md 项目文档。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `05b2aec` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
