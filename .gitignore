@@ -90,3 +90,6 @@ typings/
 
 # Electron-Forge
 out/
+
+# Local environment (copy from .env.example)
+.env

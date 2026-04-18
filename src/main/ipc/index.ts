@@ -5,6 +5,7 @@
  */
 
 import "./asr.handler";
+import "./asr-api.handler";
 import "./audio.handler";
 import "./hotkey.handler";
 import "./text.handler";

@@ -12,6 +12,7 @@ import {
   sendAudio,
   getConnectionStatus,
 } from "../services/asr/asr.service";
+import { getASRConfig, hasASRConfig } from "../services/asr/config";
 import { asrConfigSchema } from "../services/asr/types";
 import type { ASRConfig, TranscriptResult, ConnectionStatus } from "../services/asr/types";
 
@@ -108,4 +109,30 @@ ipcMain.on(IPC_CHANNELS.ASR.SEND_AUDIO, (_event, audioData: ArrayBuffer): void =
  */
 ipcMain.handle(IPC_CHANNELS.ASR.GET_STATUS, async (): Promise<{ status: ConnectionStatus }> => {
   return { status: getConnectionStatus() };
+});
+
+/**
+ * Get ASR configuration from environment
+ */
+ipcMain.handle(IPC_CHANNELS.ASR.GET_CONFIG, async (): Promise<{
+  configured: boolean;
+  config?: { appKey: string; accessKey: string; resourceId: string };
+}> => {
+  if (!hasASRConfig()) {
+    return { configured: false };
+  }
+
+  try {
+    const config = getASRConfig();
+    return {
+      configured: true,
+      config: {
+        appKey: config.appKey,
+        accessKey: config.accessKey,
+        resourceId: config.resourceId,
+      },
+    };
+  } catch {
+    return { configured: false };
+  }
 });

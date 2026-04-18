@@ -1,0 +1,5 @@
+{"file": ".trellis/workflow.md", "reason": "Project workflow and conventions"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend development guide"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend development guide"}
+{"file": ".trellis/spec/big-question/network-stack-differences.md", "reason": "主进程网络请求需要使用 net.fetch"}
+{"file": ".trellis/spec/backend/api-module.md", "reason": "ASR 服务模块结构"}

@@ -36,6 +36,15 @@ contextBridge.exposeInMainWorld("api", {
       ipcRenderer.send(IPC_CHANNELS.ASR.SEND_AUDIO, audioData);
     },
 
+    getConfig: (): Promise<{ configured: boolean; config?: { appKey: string; accessKey: string; resourceId: string } }> =>
+      ipcRenderer.invoke(IPC_CHANNELS.ASR.GET_CONFIG),
+
+    validateConfig: (config: ASRConfig): Promise<{ valid: boolean; error?: { code: string; message: string } }> =>
+      ipcRenderer.invoke(IPC_CHANNELS.ASR.VALIDATE_CONFIG, config),
+
+    healthCheck: (config: ASRConfig): Promise<{ healthy: boolean; latency?: number; error?: { code: string; message: string } }> =>
+      ipcRenderer.invoke(IPC_CHANNELS.ASR.HEALTH_CHECK, config),
+
     onTranscript: (callback: (result: TranscriptResult) => void): (() => void) =>
       createListener<TranscriptResult>(IPC_CHANNELS.ASR.ON_TRANSCRIPT)(callback),
 
@@ -154,6 +163,9 @@ declare global {
         connect: (config: ASRConfig) => Promise<void>;
         disconnect: () => Promise<void>;
         sendAudio: (audioData: ArrayBuffer) => void;
+        getConfig: () => Promise<{ configured: boolean; config?: { appKey: string; accessKey: string; resourceId: string } }>;
+        validateConfig: (config: ASRConfig) => Promise<{ valid: boolean; error?: { code: string; message: string } }>;
+        healthCheck: (config: ASRConfig) => Promise<{ healthy: boolean; latency?: number; error?: { code: string; message: string } }>;
         onTranscript: (callback: (result: TranscriptResult) => void) => () => void;
         onError: (callback: (error: ASRError) => void) => () => void;
         onConnectionStatus: (callback: (status: ConnectionStatus) => void) => () => void;

@@ -4,7 +4,7 @@
   "title": "macOS 语音输入应用 - T4: 火山引擎 ASR API 集成",
   "description": "",
   "status": "planning",
-  "dev_type": null,
+  "dev_type": "fullstack",
   "scope": null,
   "package": null,
   "priority": "P2",

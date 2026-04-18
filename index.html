@@ -26,6 +26,7 @@
       button.primary:hover { background: #0056b3; }
       button.danger { background: #FF3B30; color: white; }
       button.danger:hover { background: #d32f2f; }
+      button.success { background: #34C759; color: white; }
       button:disabled { opacity: 0.5; cursor: not-allowed; }
       #log {
         background: #1e1e1e;
@@ -62,10 +63,57 @@
         width: 0%;
         transition: width 0.05s;
       }
+      /* Status indicator */
+      .status-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .status-configured .status-dot { background: #34C759; }
+      .status-configured { background: #e8f5e9; color: #2e7d32; }
+      .status-not-configured .status-dot { background: #ff9800; }
+      .status-not-configured { background: #fff3e0; color: #e65100; }
+      .status-connecting .status-dot { background: #2196f3; animation: pulse 1s infinite; }
+      .status-connecting { background: #e3f2fd; color: #1565c0; }
+      .status-connected .status-dot { background: #34C759; }
+      .status-connected { background: #e8f5e9; color: #2e7d32; }
+      .status-disconnected .status-dot { background: #9e9e9e; }
+      .status-disconnected { background: #f5f5f5; color: #616161; }
+      .status-error .status-dot { background: #f44336; }
+      .status-error { background: #ffebee; color: #c62828; }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
     </style>
   </head>
   <body>
     <h1>🎤 Voice Input Test</h1>
+
+    <div class="section">
+      <h2>🔗 ASR API Status</h2>
+      <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 15px;">
+        <div id="asrStatus" class="status-indicator status-not-configured">
+          <span class="status-dot"></span>
+          <span class="status-text">Not Configured</span>
+        </div>
+        <button id="btnCheckConfig" class="primary">Check Config</button>
+        <button id="btnConnect" class="success" disabled>Connect</button>
+        <button id="btnDisconnect" class="danger" disabled>Disconnect</button>
+      </div>
+      <div id="asrInfo" style="font-size: 12px; color: #666; margin-top: 10px;">
+        Configure .env file with VOLCENGINE_APP_ID, VOLCENGINE_ACCESS_TOKEN, VOLCENGINE_RESOURCE_ID
+      </div>
+    </div>
 
     <div class="section">
       <h2>📋 Devices</h2>
@@ -79,7 +127,7 @@
 
     <div class="section">
       <h2>🔴 Recording</h2>
-      <button id="btnStart" class="primary">Start Recording</button>
+      <button id="btnStart" class="primary" disabled>Start Recording</button>
       <button id="btnStop" class="danger" disabled>Stop Recording</button>
       <div id="level-bar"><div id="level-fill"></div></div>
     </div>
@@ -97,6 +145,11 @@
       const btnGetDevices = document.getElementById('btnGetDevices');
       const btnStart = document.getElementById('btnStart');
       const btnStop = document.getElementById('btnStop');
+      const asrStatus = document.getElementById('asrStatus');
+      const asrInfo = document.getElementById('asrInfo');
+      const btnCheckConfig = document.getElementById('btnCheckConfig');
+      const btnConnect = document.getElementById('btnConnect');
+      const btnDisconnect = document.getElementById('btnDisconnect');
 
       function log(message, type = 'info') {
         const prefix = {
@@ -112,10 +165,78 @@
         logEl.scrollTop = logEl.scrollHeight;
       }
 
+      function setASRStatus(status, text) {
+        asrStatus.className = `status-indicator status-${status}`;
+        asrStatus.querySelector('.status-text').textContent = text;
+      }
+
+      function updateButtons(configured, connected) {
+        btnCheckConfig.disabled = false;
+        btnConnect.disabled = !configured || connected;
+        btnDisconnect.disabled = !connected;
+        btnStart.disabled = !connected;
+      }
+
       // Update level bar
       window.updateLevel = (level) => {
         levelFill.style.width = `${level}%`;
       };
+
+      // Check ASR config
+      btnCheckConfig.addEventListener('click', async () => {
+        log('Checking ASR configuration...');
+        setASRStatus('connecting', 'Checking...');
+        try {
+          const result = await window.api.asr.getConfig();
+          if (result.configured) {
+            log('ASR configuration found', 'success');
+            setASRStatus('configured', 'Configured');
+            asrInfo.textContent = `AppId: ${result.config.appKey.slice(0, 8)}...`;
+            updateButtons(true, false);
+          } else {
+            log('ASR configuration not found. Check .env file.', 'warn');
+            setASRStatus('not-configured', 'Not Configured');
+            asrInfo.textContent = 'Configure .env file with VOLCENGINE_APP_ID, VOLCENGINE_ACCESS_TOKEN, VOLCENGINE_RESOURCE_ID';
+            updateButtons(false, false);
+          }
+        } catch (err) {
+          log(`Error: ${err.message}`, 'error');
+          setASRStatus('error', 'Error');
+          updateButtons(false, false);
+        }
+      });
+
+      // Connect to ASR
+      btnConnect.addEventListener('click', async () => {
+        log('Connecting to ASR server...');
+        setASRStatus('connecting', 'Connecting...');
+        try {
+          const config = await window.api.asr.getConfig();
+          if (!config.configured) {
+            log('ASR not configured', 'error');
+            setASRStatus('not-configured', 'Not Configured');
+            return;
+          }
+          await window.api.asr.connect(config.config);
+          log('Connection initiated', 'success');
+        } catch (err) {
+          log(`Connect error: ${err.message}`, 'error');
+          setASRStatus('error', 'Error');
+        }
+      });
+
+      // Disconnect from ASR
+      btnDisconnect.addEventListener('click', async () => {
+        log('Disconnecting from ASR server...');
+        try {
+          await window.api.asr.disconnect();
+          log('Disconnected', 'success');
+          setASRStatus('disconnected', 'Disconnected');
+          updateButtons(true, false);
+        } catch (err) {
+          log(`Disconnect error: ${err.message}`, 'error');
+        }
+      });
 
       // Get devices
       btnGetDevices.addEventListener('click', async () => {
@@ -170,6 +291,26 @@
         }
       });
 
+      // Subscribe to ASR connection status
+      window.api.asr.onConnectionStatus((status) => {
+        log(`ASR status: ${status}`, status === 'connected' ? 'success' : 'info');
+        if (status === 'connected') {
+          setASRStatus('connected', 'Connected');
+          updateButtons(true, true);
+        } else if (status === 'disconnected') {
+          setASRStatus('disconnected', 'Disconnected');
+          updateButtons(true, false);
+        } else if (status === 'connecting') {
+          setASRStatus('connecting', 'Connecting...');
+        }
+      });
+
+      // Subscribe to ASR errors
+      window.api.asr.onError((error) => {
+        log(`ASR error [${error.code}]: ${error.message}`, 'error');
+        setASRStatus('error', 'Error');
+      });
+
       // Subscribe to audio level
       window.api.audio.onLevel((level) => {
         window.updateLevel(level);
@@ -177,7 +318,9 @@
 
       // Subscribe to audio data (for ASR)
       window.api.audio.onAudioData((data) => {
-        log(`Audio data received: ${data.byteLength} bytes`, 'warn');
+        log(`Audio data: ${data.byteLength} bytes`, 'warn');
+        // Send audio to ASR
+        window.api.asr.sendAudio(data);
       });
 
       // Subscribe to audio errors
@@ -185,7 +328,9 @@
         log(`Audio error [${error.code}]: ${error.message}`, 'error');
       });
 
-      log('UI initialized. Click "Get Devices" to start.');
+      // Initial status
+      setASRStatus('not-configured', 'Not Configured');
+      log('UI initialized. Click "Check Config" to start.');
     </script>
   </body>
 </html>
