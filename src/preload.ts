@@ -7,7 +7,7 @@
 
 import { contextBridge, ipcRenderer } from "electron";
 import { IPC_CHANNELS } from "./shared/constants/channels";
-import type { ASRConfig, TranscriptResult, ASRError, ConnectionStatus, AudioDevice } from "./main/services/asr/types";
+import type { ASRConfig, TranscriptResult, ASRError, ConnectionStatusDetail, AudioDevice } from "./main/services/asr/types";
 
 /**
  * Create unsubscribe functions for IPC listeners
@@ -52,9 +52,9 @@ contextBridge.exposeInMainWorld("api", {
       createListener<ASRError>(IPC_CHANNELS.ASR.ON_ERROR)(callback),
 
     onConnectionStatus: (
-      callback: (status: ConnectionStatus) => void
+      callback: (detail: ConnectionStatusDetail) => void
     ): (() => void) =>
-      createListener<ConnectionStatus>(IPC_CHANNELS.ASR.ON_CONNECTION_STATUS)(callback),
+      createListener<ConnectionStatusDetail>(IPC_CHANNELS.ASR.ON_CONNECTION_STATUS)(callback),
   },
 
   // ============== Audio ==============
@@ -168,7 +168,7 @@ declare global {
         healthCheck: (config: ASRConfig) => Promise<{ healthy: boolean; latency?: number; error?: { code: string; message: string } }>;
         onTranscript: (callback: (result: TranscriptResult) => void) => () => void;
         onError: (callback: (error: ASRError) => void) => () => void;
-        onConnectionStatus: (callback: (status: ConnectionStatus) => void) => () => void;
+        onConnectionStatus: (callback: (detail: ConnectionStatusDetail) => void) => () => void;
       };
       audio: {
         startRecording: (options?: { deviceId?: string }) => Promise<{ success: boolean; error?: string }>;
