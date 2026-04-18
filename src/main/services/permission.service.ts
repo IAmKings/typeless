@@ -109,3 +109,35 @@ export type PermissionType = keyof typeof SETTINGS_URLS;
 export function openPermissionSettings(type: PermissionType): void {
   shell.openExternal(SETTINGS_URLS[type]);
 }
+
+/**
+ * Ensure all required permissions are granted.
+ * Checks status, requests if needed, and guides to settings if denied.
+ *
+ * @see macos-permissions.md for the pattern specification
+ */
+export async function ensurePermissions(): Promise<boolean> {
+  const status = getPermissionStatus();
+
+  // Check microphone
+  if (status.microphone === "not-determined") {
+    const granted = await systemPreferences.askForMediaAccess("microphone");
+    if (!granted) {
+      return false;
+    }
+  } else if (status.microphone !== "granted") {
+    // Guide user to settings for denied/restricted
+    openPermissionSettings("microphone");
+    return false;
+  }
+
+  // Check accessibility
+  if (!status.accessibility) {
+    // This will prompt if needed
+    systemPreferences.isTrustedAccessibilityClient(true);
+    openPermissionSettings("accessibility");
+    return false;
+  }
+
+  return true;
+}

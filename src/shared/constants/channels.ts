@@ -65,6 +65,9 @@ export const IPC_CHANNELS = {
   PERMISSION: {
     CHECK_MICROPHONE: "permission:checkMicrophone",
     REQUEST_MICROPHONE: "permission:requestMicrophone",
+    GET_STATUS: "permission:getStatus",
+    CHECK_ACCESSIBILITY: "permission:checkAccessibility",
+    PROMPT_ACCESSIBILITY: "permission:promptAccessibility",
   },
 } as const;
 

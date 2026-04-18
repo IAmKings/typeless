@@ -8,7 +8,9 @@ import {
   checkMicrophonePermission,
   requestMicrophonePermission,
   checkAccessibilityPermission,
+  promptAccessibilityPermission,
   getPermissionStatus,
+  openPermissionSettings,
   type PermissionStatus,
 } from "../services/permission.service";
 
@@ -29,13 +31,24 @@ ipcMain.handle(IPC_CHANNELS.PERMISSION.REQUEST_MICROPHONE, async (): Promise<boo
 /**
  * Get full permission status
  */
-ipcMain.handle("permission:getStatus", async (): Promise<PermissionStatus> => {
+ipcMain.handle(IPC_CHANNELS.PERMISSION.GET_STATUS, async (): Promise<PermissionStatus> => {
   return getPermissionStatus();
 });
 
 /**
  * Check accessibility permission
  */
-ipcMain.handle("permission:checkAccessibility", async (): Promise<boolean> => {
+ipcMain.handle(IPC_CHANNELS.PERMISSION.CHECK_ACCESSIBILITY, async (): Promise<boolean> => {
   return checkAccessibilityPermission();
+});
+
+/**
+ * Prompt accessibility permission
+ */
+ipcMain.handle(IPC_CHANNELS.PERMISSION.PROMPT_ACCESSIBILITY, async (): Promise<boolean> => {
+  const granted = promptAccessibilityPermission();
+  if (!granted) {
+    openPermissionSettings("accessibility");
+  }
+  return granted;
 });

@@ -152,6 +152,15 @@ contextBridge.exposeInMainWorld("api", {
 
     requestMicrophone: (): Promise<boolean> =>
       ipcRenderer.invoke(IPC_CHANNELS.PERMISSION.REQUEST_MICROPHONE),
+
+    getStatus: (): Promise<{ microphone: string; accessibility: boolean }> =>
+      ipcRenderer.invoke(IPC_CHANNELS.PERMISSION.GET_STATUS),
+
+    checkAccessibility: (): Promise<boolean> =>
+      ipcRenderer.invoke(IPC_CHANNELS.PERMISSION.CHECK_ACCESSIBILITY),
+
+    promptAccessibility: (): Promise<boolean> =>
+      ipcRenderer.invoke(IPC_CHANNELS.PERMISSION.PROMPT_ACCESSIBILITY),
   },
 });
 
@@ -205,6 +214,9 @@ declare global {
       permission: {
         checkMicrophone: () => Promise<boolean>;
         requestMicrophone: () => Promise<boolean>;
+        getStatus: () => Promise<{ microphone: string; accessibility: boolean }>;
+        checkAccessibility: () => Promise<boolean>;
+        promptAccessibility: () => Promise<boolean>;
       };
     };
   }
