@@ -171,3 +171,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 6: T5 语音输入→文本输出管道 + GitHub Actions
+
+**Date**: 2026-04-19
+**Task**: T5 语音输入→文本输出管道 + GitHub Actions
+**Branch**: `master`
+
+### Summary
+
+实现语音输入到文本输出的自动管道连接，ASR 转写结果自动触发文本注入；添加 GitHub Actions CI/CD 自动打包脚本
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `cc15233` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

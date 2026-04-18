@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 5
+- **Total Sessions**: 6
 - **Last Active**: 2026-04-19
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~173 | Active |
+| `journal-1.md` | ~206 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 6 | 2026-04-19 | T5 语音输入→文本输出管道 + GitHub Actions | `cc15233` | `master` |
 | 5 | 2026-04-19 | T4 火山引擎 ASR API 集成完成 | `05b2aec` | `master` |
 | 4 | 2026-04-18 | T2 WebSocket 客户端封装完成 | `1354140` | `master` |
 | 3 | 2026-04-18 | T1 音频采集模块实现完成 | `c0beb93` | `master` |
