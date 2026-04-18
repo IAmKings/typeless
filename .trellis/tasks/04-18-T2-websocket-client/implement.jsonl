@@ -1,0 +1,5 @@
+{"file": ".trellis/workflow.md", "reason": "Project workflow and conventions"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend development guide"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend development guide"}
+{"file": ".trellis/spec/big-question/network-stack-differences.md", "reason": "WebSocket 在主进程中的网络请求处理"}
+{"file": ".trellis/spec/backend/api-module.md", "reason": "WebSocket 客户端服务模块模式"}

@@ -7,7 +7,7 @@
 
 import { contextBridge, ipcRenderer } from "electron";
 import { IPC_CHANNELS } from "./shared/constants/channels";
-import type { ASRConfig, TranscriptResult, ASRError, ConnectionStatus, AudioDevice } from "./main/types/asr";
+import type { ASRConfig, TranscriptResult, ASRError, ConnectionStatus, AudioDevice } from "./main/services/asr/types";
 
 /**
  * Create unsubscribe functions for IPC listeners

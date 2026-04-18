@@ -11,6 +11,7 @@ export const IPC_CHANNELS = {
     CONNECT: "asr:connect",
     DISCONNECT: "asr:disconnect",
     SEND_AUDIO: "asr:sendAudio",
+    GET_STATUS: "asr:getStatus",
     ON_TRANSCRIPT: "asr:onTranscript",
     ON_ERROR: "asr:onError",
     ON_CONNECTION_STATUS: "asr:onConnectionStatus",
