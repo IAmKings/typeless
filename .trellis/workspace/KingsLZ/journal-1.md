@@ -105,3 +105,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 4: T2 WebSocket 客户端封装完成
+
+**Date**: 2026-04-18
+**Task**: T2 WebSocket 客户端封装完成
+**Branch**: `master`
+
+### Summary
+
+实现 ASR WebSocket 客户端模块。使用 ws 库连接火山引擎 ASR 服务器，实现 connect/disconnect/sendAudio 方法，添加自动重连机制（最多 3 次）。新增 asr.service.ts、codec.ts 编解码器、types.ts 类型定义。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1354140` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

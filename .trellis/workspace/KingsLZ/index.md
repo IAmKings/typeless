@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 3
+- **Total Sessions**: 4
 - **Last Active**: 2026-04-18
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~107 | Active |
+| `journal-1.md` | ~140 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 4 | 2026-04-18 | T2 WebSocket 客户端封装完成 | `1354140` | `master` |
 | 3 | 2026-04-18 | T1 音频采集模块实现完成 | `c0beb93` | `master` |
 | 2 | 2026-04-18 | T3 IPC 通道设计完成 | `5602a4b`, `13864c4` | `master` |
 | 1 | 2026-04-18 | 初始化 Electron 项目并完成 Trellis onboarding | `b7dce4a` | `master` |
