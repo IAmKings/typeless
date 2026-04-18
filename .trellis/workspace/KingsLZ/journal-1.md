@@ -204,3 +204,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 7: T6 全局快捷键触发实现
+
+**Date**: 2026-04-19
+**Task**: T6 全局快捷键触发实现
+**Branch**: `master`
+
+### Summary
+
+完善全局快捷键模块，添加 macOS Accessibility 权限检查、快捷键重复注册检测、结构化错误返回
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4ef0eaa` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
