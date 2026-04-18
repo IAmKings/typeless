@@ -38,6 +38,20 @@ export const audioDeviceSchema = z.object({
   isDefault: z.boolean(),
 });
 
+/** Connection status detail schema */
+export const connectionStatusDetailSchema = z.object({
+  status: z.enum(["connected", "disconnected", "connecting", "reconnecting", "error"]),
+  attempt: z.number().optional(),
+  maxAttempts: z.number().optional(),
+  nextDelayMs: z.number().optional(),
+  error: z
+    .object({
+      code: z.string(),
+      message: z.string(),
+    })
+    .optional(),
+});
+
 // ============= Type Exports =============
 
 export type ASRConfig = z.infer<typeof asrConfigSchema>;
@@ -46,12 +60,32 @@ export type ASRError = z.infer<typeof asrErrorSchema>;
 export type AudioDevice = z.infer<typeof audioDeviceSchema>;
 
 /** Connection status */
-export type ConnectionStatus = "connected" | "disconnected" | "connecting";
+export type ConnectionStatus =
+  | "connected"
+  | "disconnected"
+  | "connecting"
+  | "reconnecting"
+  | "error";
+
+/** Detailed connection status with reconnect information */
+export interface ConnectionStatusDetail {
+  status: ConnectionStatus;
+  attempt?: number;
+  maxAttempts?: number;
+  nextDelayMs?: number;
+  error?: { code: string; message: string };
+}
+
+/** Reconnect options */
+export interface ReconnectOptions {
+  maxAttempts?: number;
+  initialDelayMs?: number;
+  maxDelayMs?: number;
+  backoffMultiplier?: number;
+}
 
 /** Audio level callback */
 export interface AudioLevel {
   level: number; // 0-100
   timestamp: number;
 }
-
-// Note: AudioDevice is already defined and exported above
