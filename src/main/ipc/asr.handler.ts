@@ -10,11 +10,11 @@ import {
   connect,
   disconnect,
   sendAudio,
-  getConnectionStatus,
+  getConnectionStatusDetail,
 } from "../services/asr/asr.service";
 import { getASRConfig, hasASRConfig } from "../services/asr/config";
 import { asrConfigSchema } from "../services/asr/types";
-import type { ASRConfig, TranscriptResult, ConnectionStatus } from "../services/asr/types";
+import type { ASRConfig, TranscriptResult, ConnectionStatusDetail } from "../services/asr/types";
 import { injectText } from "./text.handler";
 
 // ============= Logging =============
@@ -70,8 +70,8 @@ ipcMain.handle(IPC_CHANNELS.ASR.CONNECT, async (_event, rawConfig: unknown): Pro
       onError: (error: { code: string; message: string }) => {
         notifyRenderer(IPC_CHANNELS.ASR.ON_ERROR, error);
       },
-      onStatusChange: (status: ConnectionStatus) => {
-        notifyRenderer(IPC_CHANNELS.ASR.ON_CONNECTION_STATUS, status);
+      onStatusChange: (detail: ConnectionStatusDetail) => {
+        notifyRenderer(IPC_CHANNELS.ASR.ON_CONNECTION_STATUS, detail);
       },
     };
 
@@ -114,8 +114,8 @@ ipcMain.on(IPC_CHANNELS.ASR.SEND_AUDIO, (_event, audioData: ArrayBuffer): void =
 /**
  * Get current connection status
  */
-ipcMain.handle(IPC_CHANNELS.ASR.GET_STATUS, async (): Promise<{ status: ConnectionStatus }> => {
-  return { status: getConnectionStatus() };
+ipcMain.handle(IPC_CHANNELS.ASR.GET_STATUS, async (): Promise<ConnectionStatusDetail> => {
+  return getConnectionStatusDetail();
 });
 
 /**

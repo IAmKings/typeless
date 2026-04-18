@@ -3,7 +3,7 @@
   "name": "T11-error-retry",
   "title": "macOS 语音输入应用 - T11: 错误处理与重连",
   "description": "",
-  "status": "planning",
+  "status": "in_progress",
   "dev_type": null,
   "scope": null,
   "package": null,
@@ -12,9 +12,9 @@
   "assignee": "KingsLZ",
   "createdAt": "2026-04-18",
   "completedAt": null,
-  "branch": null,
+  "branch": "feature/T11-error-retry",
   "base_branch": "master",
-  "worktree_path": null,
+  "worktree_path": "/Users/mac/Documents/ai_workspace/trellis-worktrees/feature/T11-error-retry",
   "current_phase": 0,
   "next_action": [
     {
