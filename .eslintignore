@@ -1,0 +1,11 @@
+# Ignore Electron Forge config and Vite configs
+# These are build configuration files, not source code
+forge.config.ts
+vite.main.config.ts
+vite.preload.config.ts
+vite.renderer.config.ts
+
+# Ignore build output
+.vite/
+out/
+dist/
