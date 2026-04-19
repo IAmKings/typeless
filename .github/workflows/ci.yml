@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - 'v*'
+  pull_request:
+  workflow_dispatch:
+
+env:
+  ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: npx tsc --noEmit
