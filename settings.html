@@ -31,6 +31,13 @@
     <label>ResourceId</label>
     <input type="text" id="resourceId" placeholder="Enter ResourceId">
   </div>
+  <div class="field">
+    <label>Language</label>
+    <select id="language" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;font-size:14px;box-sizing:border-box;">
+      <option value="en">English</option>
+      <option value="zh-CN">中文</option>
+    </select>
+  </div>
   <div class="buttons">
     <button class="cancel" id="cancelBtn">Cancel</button>
     <button class="save" id="saveBtn">Save</button>
@@ -41,14 +48,14 @@
     const statusMsg = document.getElementById('statusMsg');
 
     document.getElementById('saveBtn').addEventListener('click', async () => {
-      const config = {
-        appKey: document.getElementById('appKey').value.trim(),
-        accessKey: document.getElementById('accessKey').value.trim(),
-        resourceId: document.getElementById('resourceId').value.trim()
-      };
+      const appKey = document.getElementById('appKey').value.trim();
+      const accessKey = document.getElementById('accessKey').value.trim();
+      const resourceId = document.getElementById('resourceId').value.trim();
+      const language = document.getElementById('language').value;
 
       try {
-        await window.api.settings.save(config);
+        await window.api.settings.save({ appKey, accessKey, resourceId });
+        await window.api.settings.set("language", language);
         statusMsg.style.display = 'block';
         setTimeout(() => window.close(), 1500);
       } catch (err) {
@@ -61,13 +68,18 @@
     });
 
     // Load current settings on open
-    window.api.settings.getAll().then(config => {
+    async function loadSettings() {
+      const config = await window.api.settings.getAll();
+      const lang = await window.api.settings.get("language");
+
       if (config) {
         document.getElementById('appKey').value = config.appKey || '';
         document.getElementById('accessKey').value = config.accessKey || '';
         document.getElementById('resourceId').value = config.resourceId || '';
       }
-    });
+      document.getElementById('language').value = lang || 'en';
+    }
+    loadSettings();
   </script>
 </body>
 </html>

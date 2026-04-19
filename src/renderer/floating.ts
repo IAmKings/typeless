@@ -7,6 +7,8 @@
  * - Real-time audio waveform
  */
 
+import { t, setLocale, type Locale } from "../i18n/index";
+
 const micStatusEl = document.getElementById('micStatus') as HTMLElement;
 const asrStatusEl = document.getElementById('asrStatus') as HTMLElement;
 const waveformCanvas = document.getElementById('waveformCanvas') as HTMLCanvasElement;
@@ -77,19 +79,19 @@ function updateMicStatus(status: string): void {
 
   switch (status) {
     case 'recording':
-      micStatusEl.textContent = 'Recording';
+      micStatusEl.textContent = t('floating.status.recording');
       cancelHint.classList.add('visible');
       actionHint.style.display = 'none';
       break;
     case 'processing':
-      micStatusEl.textContent = 'Processing';
+      micStatusEl.textContent = t('floating.status.processing');
       break;
     case 'idle':
     default:
-      micStatusEl.textContent = 'Idle';
+      micStatusEl.textContent = t('floating.status.idle');
       cancelHint.classList.remove('visible');
       actionHint.style.display = 'block';
-      actionHint.textContent = 'Press hotkey to start';
+      actionHint.textContent = t('floating.action.pressHotkey');
       break;
   }
 }
@@ -99,22 +101,39 @@ function updateASRStatus(status: string): void {
 
   switch (status) {
     case 'connected':
-      asrStatusEl.textContent = 'Online';
+      asrStatusEl.textContent = t('floating.status.online');
       break;
     case 'connecting':
-      asrStatusEl.textContent = 'Connecting';
+      asrStatusEl.textContent = t('floating.status.connecting');
       break;
     case 'reconnecting':
-      asrStatusEl.textContent = 'Reconnecting';
+      asrStatusEl.textContent = t('floating.status.reconnecting');
       break;
     case 'error':
-      asrStatusEl.textContent = 'Error';
+      asrStatusEl.textContent = t('floating.status.error');
       break;
     case 'disconnected':
     default:
-      asrStatusEl.textContent = 'Offline';
+      asrStatusEl.textContent = t('floating.status.offline');
       break;
   }
+}
+
+// Load language setting and initialize i18n
+async function initI18n(): Promise<void> {
+  try {
+    const lang = await window.api.settings.get<string>("language");
+    const locale = lang as Locale || "en";
+    setLocale(locale);
+  } catch {
+    setLocale("en");
+  }
+
+  // Update static labels
+  const micLabelEl = document.getElementById('micLabel');
+  const asrLabelEl = document.getElementById('asrLabel');
+  if (micLabelEl) micLabelEl.textContent = t('floating.mic');
+  if (asrLabelEl) asrLabelEl.textContent = t('floating.asr');
 }
 
 // ============= Audio Level Updates =============
@@ -255,7 +274,11 @@ window.api.asr.onTranscript((result: { text: string; isFinal: boolean }) => {
 
 // ============= Initialization =============
 
-updateMicStatus('idle');
-updateASRStatus('disconnected');
+async function init(): Promise<void> {
+  await initI18n();
+  updateMicStatus('idle');
+  updateASRStatus('disconnected');
+  console.log('[Floating Window] Initialized');
+}
 
-console.log('[Floating Window] Initialized');
+init();

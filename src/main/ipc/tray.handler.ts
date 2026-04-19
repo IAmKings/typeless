@@ -12,13 +12,14 @@ import { app, Tray, Menu, nativeImage, BrowserWindow, ipcMain, type NativeImage 
 import path from 'node:path';
 import { IPC_CHANNELS } from '../../shared/constants/channels';
 import { showSettingsWindow } from './settings-dialog.handler';
+import { t } from '../../i18n/index';
 
 let tray: Tray | null = null;
 
 // Current status for icon
 type TrayStatus = 'idle' | 'recording' | 'error';
 
-// Default env values for reference
+// Default env values for reference (loaded from .env)
 const envConfig = {
   appKey: '',
   accessKey: '',
@@ -54,14 +55,14 @@ function createTrayIcon(status: TrayStatus): NativeImage {
 }
 
 /**
- * Build context menu
+ * Build context menu with i18n
  */
 function buildContextMenu(): Menu {
   const isVisible = BrowserWindow.getAllWindows().some(w => w.isVisible());
 
   return Menu.buildFromTemplate([
     {
-      label: isVisible ? 'Hide Floating Window' : 'Show Floating Window',
+      label: isVisible ? t('tray.menu.hideWindow') : t('tray.menu.showWindow'),
       click: () => {
         const windows = BrowserWindow.getAllWindows();
         windows.forEach(win => {
@@ -77,23 +78,23 @@ function buildContextMenu(): Menu {
     },
     { type: 'separator' },
     {
-      label: 'Settings',
+      label: t('tray.menu.settings'),
       submenu: [
         {
-          label: `AppKey: ${envConfig.appKey ? '******' + envConfig.appKey.slice(-4) : 'Not set'}`,
+          label: `${t('tray.menu.appKey')}: ${envConfig.appKey ? '******' + envConfig.appKey.slice(-4) : t('tray.menu.notSet')}`,
           enabled: false,
         },
         {
-          label: `AccessKey: ${envConfig.accessKey ? '******' + envConfig.accessKey.slice(-4) : 'Not set'}`,
+          label: `${t('tray.menu.accessKey')}: ${envConfig.accessKey ? '******' + envConfig.accessKey.slice(-4) : t('tray.menu.notSet')}`,
           enabled: false,
         },
         {
-          label: `ResourceId: ${envConfig.resourceId ? '******' + envConfig.resourceId.slice(-4) : 'Not set'}`,
+          label: `${t('tray.menu.resourceId')}: ${envConfig.resourceId ? '******' + envConfig.resourceId.slice(-4) : t('tray.menu.notSet')}`,
           enabled: false,
         },
         { type: 'separator' },
         {
-          label: 'Configure Settings...',
+          label: t('tray.menu.configure'),
           click: () => {
             showSettingsWindow();
           },
@@ -102,9 +103,8 @@ function buildContextMenu(): Menu {
     },
     { type: 'separator' },
     {
-      label: 'Quit',
+      label: t('tray.menu.quit'),
       click: () => {
-        // Force quit on macOS
         app.exit(0);
       },
     },
@@ -136,7 +136,7 @@ export function registerTrayHandlers(): void {
 export function createTray(): Tray {
   // Create tray with idle icon initially
   tray = new Tray(createTrayIcon('idle'));
-  tray.setToolTip('Voice Input');
+  tray.setToolTip(t('tray.tooltip'));
   tray.setContextMenu(buildContextMenu());
 
   // Click on tray icon - toggle floating window

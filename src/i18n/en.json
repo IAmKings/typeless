@@ -1,0 +1,115 @@
+{
+  "app": {
+    "name": "Voice Input"
+  },
+  "floating": {
+    "title": "Voice Input",
+    "mic": "Mic",
+    "asr": "ASR",
+    "status": {
+      "idle": "Idle",
+      "recording": "Recording",
+      "processing": "Processing",
+      "offline": "Offline",
+      "online": "Online",
+      "connecting": "Connecting",
+      "reconnecting": "Reconnecting",
+      "error": "Error",
+      "connected": "Connected",
+      "disconnected": "Disconnected"
+    },
+    "action": {
+      "pressHotkey": "Press hotkey to start",
+      "clickToCancel": "Click to Cancel"
+    }
+  },
+  "settings": {
+    "title": "Voice Input Settings",
+    "appKey": "AppKey",
+    "accessKey": "AccessKey",
+    "resourceId": "ResourceId",
+    "language": "Language",
+    "placeholder": {
+      "appKey": "Enter AppKey",
+      "accessKey": "Enter AccessKey",
+      "resourceId": "Enter ResourceId"
+    },
+    "button": {
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "message": {
+      "saved": "Settings saved! Restart app to apply changes.",
+      "saveFailed": "Failed to save: "
+    }
+  },
+  "tray": {
+    "menu": {
+      "showWindow": "Show Floating Window",
+      "hideWindow": "Hide Floating Window",
+      "settings": "Settings",
+      "appKey": "AppKey",
+      "accessKey": "AccessKey",
+      "resourceId": "ResourceId",
+      "notSet": "Not set",
+      "configure": "Configure Settings...",
+      "quit": "Quit"
+    },
+    "tooltip": "Voice Input"
+  },
+  "error": {
+    "accessibility": "Accessibility permission required. Please enable in System Settings > Privacy & Security > Accessibility.",
+    "shortcutRegistered": "Shortcut \"{shortcut}\" is already registered",
+    "unknown": "Unknown error",
+    "textInjectionFailed": "Text injection failed: {message}",
+    "recordingFailed": "Failed to start recording",
+    "alreadyRecording": "Already recording",
+    "heartbeatTimeout": "Heartbeat timeout - connection may be stale",
+    "reconnectFailed": "Failed to reconnect after {maxAttempts} attempts",
+    "connectionError": "Connection error - will reconnect",
+    "clientDisconnect": "Client disconnect"
+  },
+  "index": {
+    "title": "Voice Input",
+    "testTitle": "Voice Input Test",
+    "asrStatus": "ASR API Status",
+    "devices": "Devices",
+    "recording": "Recording",
+    "log": "Log",
+    "notConfigured": "Not Configured",
+    "configured": "Configured",
+    "checkConfig": "Check Config",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "getDevices": "Get Devices",
+    "startRecording": "Start Recording",
+    "stopRecording": "Stop Recording",
+    "selectDevice": "Select a microphone...",
+    "defaultDevice": " (Default)",
+    "configureEnv": "Configure .env file with VOLCENGINE_APP_KEY, VOLCENGINE_ACCESS_KEY, VOLCENGINE_RESOURCE_ID",
+    "checkingAsr": "Checking ASR configuration...",
+    "checking": "Checking...",
+    "asrFound": "ASR configuration found",
+    "asrNotFound": "ASR configuration not found. Check .env file.",
+    "error": "Error",
+    "connectingToAsr": "Connecting to ASR server...",
+    "asrNotConfigured": "ASR not configured",
+    "connectionInitiated": "Connection initiated",
+    "connectError": "Connect error: {message}",
+    "disconnecting": "Disconnecting from ASR server...",
+    "disconnected": "Disconnected",
+    "disconnectError": "Disconnect error: {message}",
+    "gettingDevices": "Getting audio devices...",
+    "foundDevices": "Found {count} device(s)",
+    "startingRecording": "Starting recording{device}...",
+    "recordingStarted": "Recording started!",
+    "recordingStartFailed": "Failed: {error}",
+    "stoppingRecording": "Stopping recording...",
+    "recordingStopped": "Recording stopped",
+    "asrStatus": "ASR status: {status}",
+    "asrError": "ASR error [{code}]: {message}",
+    "audioData": "Audio data: {bytes} bytes",
+    "audioError": "Audio error [{code}]: {message}",
+    "uiInitialized": "UI initialized. Click \"Check Config\" to start."
+  }
+}
