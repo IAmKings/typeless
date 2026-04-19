@@ -85,13 +85,6 @@ ipcMain.handle(IPC_CHANNELS.SETTINGS.SAVE, async (_, config: { appKey: string; a
 });
 
 /**
- * Get all settings (internal)
- */
-ipcMain.handle("settings:getAll", async (): Promise<AppSettings> => {
-  return settingsStore;
-});
-
-/**
  * Reset settings to defaults
  */
 ipcMain.handle("settings:reset", async (): Promise<void> => {
