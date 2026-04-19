@@ -153,6 +153,13 @@ contextBridge.exposeInMainWorld("api", {
     requestMicrophone: (): Promise<boolean> =>
       ipcRenderer.invoke(IPC_CHANNELS.PERMISSION.REQUEST_MICROPHONE),
   },
+
+  // ============== Tray ==============
+  tray: {
+    updateStatus: (status: 'idle' | 'recording' | 'error'): void => {
+      ipcRenderer.send(IPC_CHANNELS.TRAY.UPDATE_STATUS, status);
+    },
+  },
 });
 
 // Type declaration for window.api
@@ -205,6 +212,9 @@ declare global {
       permission: {
         checkMicrophone: () => Promise<boolean>;
         requestMicrophone: () => Promise<boolean>;
+      };
+      tray: {
+        updateStatus: (status: 'idle' | 'recording' | 'error') => void;
       };
     };
   }

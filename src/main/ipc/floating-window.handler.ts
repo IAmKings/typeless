@@ -5,6 +5,8 @@
  * - Shows recording status
  * - Displays real-time transcription
  * - Can be toggled with global hotkey
+ * - Transparent background with glass effect
+ * - Free positioning (not fixed)
  */
 
 import { ipcMain, BrowserWindow, screen } from "electron";
@@ -15,6 +17,9 @@ let floatingWindow: BrowserWindow | null = null;
 // Track hover state for window
 let hoverInterval: NodeJS.Timeout | null = null;
 
+// Track if cursor is outside window (for click-outside-to-hide)
+let cursorWasInside = false;
+
 /**
  * Register floating window handlers
  */
@@ -24,6 +29,7 @@ export function registerFloatingWindowHandlers(): void {
       floatingWindow.show();
       floatingWindow.focus();
       startHoverTracking();
+      cursorWasInside = false;
     }
   });
 
@@ -43,6 +49,7 @@ export function registerFloatingWindowHandlers(): void {
         floatingWindow.show();
         floatingWindow.focus();
         startHoverTracking();
+        cursorWasInside = false;
       }
     }
   });
@@ -57,9 +64,10 @@ export function registerFloatingWindowHandlers(): void {
  */
 export function createFloatingWindow(preloadPath: string): BrowserWindow {
   floatingWindow = new BrowserWindow({
-    width: 300,
-    height: 150,
+    width: 320,
+    height: 180,
     frame: false, // No title bar
+    transparent: true, // Transparent background
     alwaysOnTop: true,
     skipTaskbar: true,
     resizable: false,
@@ -69,9 +77,6 @@ export function createFloatingWindow(preloadPath: string): BrowserWindow {
       contextIsolation: true,
     },
   });
-
-  // Load floating window page
-  // floatingWindow.loadURL(`${MAIN_WINDOW_VITE_DEV_SERVER_URL}#/floating`);
 
   // Hide instead of close
   floatingWindow.on("close", (event) => {
@@ -83,7 +88,7 @@ export function createFloatingWindow(preloadPath: string): BrowserWindow {
 }
 
 /**
- * Track cursor hover state
+ * Track cursor hover state - hide when cursor leaves window
  */
 function startHoverTracking(): void {
   if (hoverInterval) return;
@@ -105,6 +110,15 @@ function startHoverTracking(): void {
       IPC_CHANNELS.FLOATING_WINDOW.ON_HOVER_CHANGED,
       isInside
     );
+
+    // Hide window when cursor leaves (click-outside behavior)
+    if (cursorWasInside && !isInside) {
+      floatingWindow.hide();
+      stopHoverTracking();
+      return;
+    }
+
+    cursorWasInside = isInside;
   }, 50);
 }
 

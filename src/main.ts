@@ -6,7 +6,8 @@ import { app, BrowserWindow, globalShortcut } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
 import "./main/ipc"; // Import to register all IPC handlers
-import { registerFloatingWindowHandlers } from "./main/ipc/floating-window.handler";
+import { registerFloatingWindowHandlers, createFloatingWindow } from "./main/ipc/floating-window.handler";
+import { createTray, registerTrayHandlers } from "./main/ipc/tray.handler";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -40,6 +41,23 @@ const createWindow = (): BrowserWindow => {
 
   // Register floating window handlers
   registerFloatingWindowHandlers();
+
+  // Create floating window (hidden initially)
+  const floatingWindow = createFloatingWindow(path.join(__dirname, "preload.js"));
+  // Load floating window content
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    floatingWindow.loadURL(`${MAIN_WINDOW_VITE_DEV_SERVER_URL}/floating.html`);
+  } else {
+    floatingWindow.loadFile(
+      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/floating.html`)
+    );
+  }
+
+  // Register tray handlers
+  registerTrayHandlers();
+
+  // Create system tray
+  createTray();
 
   return mainWindow;
 };

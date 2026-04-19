@@ -1,0 +1,5 @@
+{"file": ".trellis/workflow.md", "reason": "Project workflow and conventions"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend development guide"}
+{"file": ".trellis/spec/frontend/ipc-electron.md", "reason": "Floating Window Pattern 实现模式"}
+{"file": ".trellis/spec/frontend/components.md", "reason": "UI组件规范和模式"}
+{"file": ".trellis/spec/frontend/css-design.md", "reason": "CSS组织和设计令牌"}

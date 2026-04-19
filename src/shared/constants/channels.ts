@@ -66,6 +66,11 @@ export const IPC_CHANNELS = {
     CHECK_MICROPHONE: "permission:checkMicrophone",
     REQUEST_MICROPHONE: "permission:requestMicrophone",
   },
+
+  // System tray
+  TRAY: {
+    UPDATE_STATUS: "tray:updateStatus",
+  },
 } as const;
 
 export type IPCChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
