@@ -8,6 +8,7 @@
 import { ipcMain } from "electron";
 import { IPC_CHANNELS } from "../../shared/constants/channels";
 import { z } from "zod";
+import { readEnvConfig, saveEnvConfig } from "./settings-dialog.handler";
 
 // ============= Settings Schema =============
 
@@ -67,7 +68,24 @@ ipcMain.handle(IPC_CHANNELS.SETTINGS.SET, async <T>(_: unknown, key: string, val
 });
 
 /**
- * Get all settings
+ * Get all settings from .env
+ */
+ipcMain.handle(IPC_CHANNELS.SETTINGS.GET_ALL, async (): Promise<{ appKey: string; accessKey: string; resourceId: string }> => {
+  return readEnvConfig();
+});
+
+/**
+ * Save settings to .env
+ */
+ipcMain.handle(IPC_CHANNELS.SETTINGS.SAVE, async (_, config: { appKey: string; accessKey: string; resourceId: string }): Promise<void> => {
+  const success = saveEnvConfig(config);
+  if (!success) {
+    throw new Error("Failed to save settings to .env");
+  }
+});
+
+/**
+ * Get all settings (internal)
  */
 ipcMain.handle("settings:getAll", async (): Promise<AppSettings> => {
   return settingsStore;

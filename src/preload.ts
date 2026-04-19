@@ -143,6 +143,12 @@ contextBridge.exposeInMainWorld("api", {
 
     set: <T>(key: string, value: T): Promise<void> =>
       ipcRenderer.invoke(IPC_CHANNELS.SETTINGS.SET, key, value),
+
+    getAll: (): Promise<{ appKey: string; accessKey: string; resourceId: string }> =>
+      ipcRenderer.invoke(IPC_CHANNELS.SETTINGS.GET_ALL),
+
+    save: (config: { appKey: string; accessKey: string; resourceId: string }): Promise<void> =>
+      ipcRenderer.invoke(IPC_CHANNELS.SETTINGS.SAVE, config),
   },
 
   // ============== Permission ==============
@@ -208,6 +214,8 @@ declare global {
       settings: {
         get: <T>(key: string) => Promise<T | null>;
         set: <T>(key: string, value: T) => Promise<void>;
+        getAll: () => Promise<{ appKey: string; accessKey: string; resourceId: string }>;
+        save: (config: { appKey: string; accessKey: string; resourceId: string }) => Promise<void>;
       };
       permission: {
         checkMicrophone: () => Promise<boolean>;

@@ -8,6 +8,7 @@ import started from "electron-squirrel-startup";
 import "./main/ipc"; // Import to register all IPC handlers
 import { registerFloatingWindowHandlers, createFloatingWindow } from "./main/ipc/floating-window.handler";
 import { createTray, registerTrayHandlers } from "./main/ipc/tray.handler";
+import { registerSettingsHandlers } from "./main/ipc/settings-dialog.handler";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -55,6 +56,9 @@ const createWindow = (): BrowserWindow => {
 
   // Register tray handlers
   registerTrayHandlers();
+
+  // Register settings handlers
+  registerSettingsHandlers();
 
   // Create system tray
   createTray();

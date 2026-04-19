@@ -8,9 +8,10 @@
  * - Quit application
  */
 
-import { app, Tray, Menu, nativeImage, BrowserWindow, dialog, ipcMain, type NativeImage } from 'electron';
+import { app, Tray, Menu, nativeImage, BrowserWindow, ipcMain, type NativeImage } from 'electron';
 import path from 'node:path';
 import { IPC_CHANNELS } from '../../shared/constants/channels';
+import { showSettingsWindow } from './settings-dialog.handler';
 
 let tray: Tray | null = null;
 
@@ -30,11 +31,11 @@ const envConfig = {
  */
 function getAssetPath(filename: string): string {
   // In production, assets are in the app bundle's Resources folder
-  // In development, assets are in src/assets
+  // In development (Vite), __dirname is .vite/build/, so we need to go up to project root then into src/assets
   if (app.isPackaged) {
     return path.join(process.resourcesPath, 'assets', filename);
   }
-  return path.join(__dirname, '..', '..', 'assets', filename);
+  return path.join(__dirname, '..', '..', 'src', 'assets', filename);
 }
 
 /**
@@ -92,14 +93,9 @@ function buildContextMenu(): Menu {
         },
         { type: 'separator' },
         {
-          label: 'Configure via .env file',
+          label: 'Configure Settings...',
           click: () => {
-            dialog.showMessageBox({
-              type: 'info',
-              title: 'Configuration',
-              message: 'Please edit the .env file to configure AppKey, AccessKey, and ResourceId.',
-              buttons: ['OK'],
-            });
+            showSettingsWindow();
           },
         },
       ],
@@ -108,7 +104,8 @@ function buildContextMenu(): Menu {
     {
       label: 'Quit',
       click: () => {
-        app.quit();
+        // Force quit on macOS
+        app.exit(0);
       },
     },
   ]);

@@ -11,7 +11,8 @@ import "./hotkey.handler";
 import "./text.handler";
 import "./settings.handler";
 import "./permission.handler";
+import { registerSettingsHandlers } from "./settings-dialog.handler";
 import { registerFloatingWindowHandlers } from "./floating-window.handler";
 import { registerTrayHandlers } from "./tray.handler";
 
-export { registerFloatingWindowHandlers, registerTrayHandlers };
+export { registerFloatingWindowHandlers, registerTrayHandlers, registerSettingsHandlers };

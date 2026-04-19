@@ -9,6 +9,7 @@ export default defineConfig({
       input: {
         main_window: resolve(__dirname, 'index.html'),
         floating_window: resolve(__dirname, 'floating.html'),
+        settings: resolve(__dirname, 'settings.html'),
       },
     },
   },

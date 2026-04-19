@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Settings - Voice Input</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px; margin: 0; background: #fff; }
+    h2 { margin: 0 0 20px 0; font-size: 16px; }
+    .field { margin-bottom: 12px; }
+    label { display: block; font-size: 12px; color: #666; margin-bottom: 4px; }
+    input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; }
+    input:focus { border-color: #007AFF; outline: none; }
+    .buttons { display: flex; gap: 10px; margin-top: 16px; }
+    button { flex: 1; padding: 8px; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; }
+    button.save { background: #007AFF; color: white; }
+    button.cancel { background: #eee; color: #333; }
+    .status { font-size: 12px; margin-top: 12px; color: #34C759; display: none; }
+  </style>
+</head>
+<body>
+  <h2>Voice Input Settings</h2>
+  <div class="field">
+    <label>AppKey</label>
+    <input type="text" id="appKey" placeholder="Enter AppKey">
+  </div>
+  <div class="field">
+    <label>AccessKey</label>
+    <input type="password" id="accessKey" placeholder="Enter AccessKey">
+  </div>
+  <div class="field">
+    <label>ResourceId</label>
+    <input type="text" id="resourceId" placeholder="Enter ResourceId">
+  </div>
+  <div class="buttons">
+    <button class="cancel" id="cancelBtn">Cancel</button>
+    <button class="save" id="saveBtn">Save</button>
+  </div>
+  <p class="status" id="statusMsg">Settings saved! Restart app to apply changes.</p>
+
+  <script>
+    const statusMsg = document.getElementById('statusMsg');
+
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+      const config = {
+        appKey: document.getElementById('appKey').value.trim(),
+        accessKey: document.getElementById('accessKey').value.trim(),
+        resourceId: document.getElementById('resourceId').value.trim()
+      };
+
+      try {
+        await window.api.settings.save(config);
+        statusMsg.style.display = 'block';
+        setTimeout(() => window.close(), 1500);
+      } catch (err) {
+        alert('Failed to save: ' + err.message);
+      }
+    });
+
+    document.getElementById('cancelBtn').addEventListener('click', () => {
+      window.close();
+    });
+
+    // Load current settings on open
+    window.api.settings.getAll().then(config => {
+      if (config) {
+        document.getElementById('appKey').value = config.appKey || '';
+        document.getElementById('accessKey').value = config.accessKey || '';
+        document.getElementById('resourceId').value = config.resourceId || '';
+      }
+    });
+  </script>
+</body>
+</html>

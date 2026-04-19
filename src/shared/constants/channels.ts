@@ -59,6 +59,8 @@ export const IPC_CHANNELS = {
   SETTINGS: {
     GET: "settings:get",
     SET: "settings:set",
+    GET_ALL: "settings:getAll",
+    SAVE: "settings:save",
   },
 
   // Permissions

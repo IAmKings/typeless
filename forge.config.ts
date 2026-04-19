@@ -45,6 +45,10 @@ const config: ForgeConfig = {
           name: 'floating_window',
           config: 'vite.renderer.config.ts',
         },
+        {
+          name: 'settings',
+          config: 'vite.renderer.config.ts',
+        },
       ],
     }),
     // Fuses are used to enable/disable various Electron functionality
