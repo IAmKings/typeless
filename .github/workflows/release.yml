@@ -12,15 +12,7 @@ env:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        include:
-          - platform: macos-latest
-            arch: x64
-          - platform: macos-latest
-            arch: arm64
-
-    runs-on: ${{ matrix.platform }}
+    runs-on: macos-latest
 
     steps:
       - name: Checkout
@@ -40,19 +32,8 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Build (package only, no make)
-        run: pnpm package
-        env:
-          ARCH: ${{ matrix.arch }}
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.platform }}-${{ matrix.arch }}
-          path: |
-            out/make/zip/darwin/${{ matrix.arch }}/*
-          if-no-files-found: error
-          retention-days: 5
+      - name: Typecheck
+        run: npx tsc --noEmit
 
 ---
 
