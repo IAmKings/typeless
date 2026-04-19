@@ -237,3 +237,57 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 8: T7-ui 悬浮窗口完成 + Tray Bug 修复
+
+**Date**: 2026-04-19
+**Task**: T7-ui 悬浮窗口完成 + Tray Bug 修复
+**Branch**: `master`
+
+### Summary
+
+(Add summary)
+
+### Main Changes
+
+## 本次 Session 完成内容
+
+### T7-ui 悬浮窗口/状态栏 UI
+- 实现悬浮窗口 UI（麦克风状态、ASR状态、音频波形）
+- 实现系统托盘（状态栏图标、设置菜单）
+- 点击外部自动隐藏悬浮窗口
+- 透明毛玻璃效果
+
+### Tray Icon Bug 修复
+- 修复状态栏图标不显示问题
+- 使用真实的 18x18 PNG 图标替换无效的 base64 data URL
+- 添加 extraResource 配置确保 assets 被正确打包
+
+### CI 修复
+- 修复 GitHub workflow pnpm 安装问题（使用 corepack）
+
+## 待完成任务
+- T8-settings: 设置页面
+- T9-text-injection: 文本注入
+- T12-i18n: 国际化支持
+
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `68c3174` | (see git log) |
+| `3bfb391` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
