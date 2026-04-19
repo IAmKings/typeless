@@ -4,7 +4,7 @@
  * Creates a floating window for user to input configuration.
  */
 
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -24,7 +24,7 @@ export function readEnvConfig(): { appKey: string; accessKey: string; resourceId
   const envPath = getEnvPath();
   const config = { appKey: '', accessKey: '', resourceId: '' };
 
-  if (!fs.existsSync(envPath)) {
+  if (!envPath || !fs.existsSync(envPath)) {
     return config;
   }
 
@@ -99,6 +99,6 @@ export function showSettingsWindow(): void {
 }
 
 export function registerSettingsHandlers(): void {
-  ipcMain.handle('settings:get', () => readEnvConfig());
-  ipcMain.handle('settings:save', (_event, config) => saveEnvConfig(config));
+  // Handlers are registered in settings.handler.ts
+  // This function is kept for consistency but does nothing
 }
