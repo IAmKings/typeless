@@ -131,6 +131,29 @@
         display: block;
       }
 
+      /* Transcript display area */
+      .transcript-container {
+        min-height: 24px;
+        margin-bottom: 12px;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.4;
+        word-break: break-word;
+      }
+
+      .transcript-text {
+        display: inline;
+      }
+
+      .transcript-cursor {
+        display: inline;
+        animation: blink 1s step-end infinite;
+      }
+
+      @keyframes blink {
+        50% { opacity: 0; }
+      }
+
       /* Action hint */
       .action-hint {
         text-align: center;
@@ -181,6 +204,10 @@
 
       <div class="waveform-container">
         <canvas class="waveform-canvas" id="waveformCanvas"></canvas>
+      </div>
+
+      <div class="transcript-container">
+        <span class="transcript-text" id="transcriptText"></span><span class="transcript-cursor" id="transcriptCursor">|</span>
       </div>
 
       <div class="cancel-hint" id="cancelHint">Click to Cancel</div>

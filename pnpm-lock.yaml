@@ -23,9 +23,9 @@ importers:
       '@electron-forge/plugin-fuses':
         specifier: ^7.11.1
         version: 7.11.1(@electron/fuses@2.1.1)
-      electron:
-        specifier: ^41.2.1
-        version: 41.2.1
+      '@xitanggg/node-insert-text':
+        specifier: ^1.5.1
+        version: 1.5.1
       electron-squirrel-startup:
         specifier: ^1.0.1
         version: 1.0.1
@@ -66,6 +66,9 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^5.62.0
         version: 5.62.0(eslint@8.57.1)(typescript@6.0.3)
+      electron:
+        specifier: ^41.2.1
+        version: 41.2.1
       eslint:
         specifier: ^8.57.1
         version: 8.57.1
@@ -650,6 +653,45 @@ packages:
 
   '@webassemblyjs/wast-printer@1.14.1':
     resolution: {integrity: sha512-kPSSXE6De1XOR820C90RIo2ogvZG+c3KiHzqUoO/F34Y2shGzesfqv7o57xrxovZJH/MetF5UjroJ/R/3isoiw==, tarball: https://registry.npmmirror.com/@webassemblyjs/wast-printer/-/wast-printer-1.14.1.tgz}
+
+  '@xitanggg/node-insert-text-darwin-arm64@1.5.1':
+    resolution: {integrity: sha512-7DlkkCm6veJOgaPDv6vL/2jtvAUFcGP/Ov3Eg2W6xwAS9uWriFMvQrcAIJJowXMTaUzVRrtnkX2qbZvWTLBfuA==, tarball: https://registry.npmmirror.com/@xitanggg/node-insert-text-darwin-arm64/-/node-insert-text-darwin-arm64-1.5.1.tgz}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@xitanggg/node-insert-text-darwin-universal@1.5.1':
+    resolution: {integrity: sha512-Eh1ASYuZpUg9RanxfWfmfnDjbDm7EIuYKpA8Lmku1tRQgAS/r9pPa5w2L1bwYi0u0s/qsUQLOoRtIEKPTeAX0Q==, tarball: https://registry.npmmirror.com/@xitanggg/node-insert-text-darwin-universal/-/node-insert-text-darwin-universal-1.5.1.tgz}
+    engines: {node: '>= 10'}
+    os: [darwin]
+
+  '@xitanggg/node-insert-text-darwin-x64@1.5.1':
+    resolution: {integrity: sha512-pbZLwu2hWuX82xYDJLgNLH6IpNaLbpeL2LmyAFL3LNvcym1RK+QXi0LJ2kGLcNYJXw/BQJ7xgGyOfVGTygQsKA==, tarball: https://registry.npmmirror.com/@xitanggg/node-insert-text-darwin-x64/-/node-insert-text-darwin-x64-1.5.1.tgz}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@xitanggg/node-insert-text-win32-arm64-msvc@1.5.1':
+    resolution: {integrity: sha512-9CstkUGmD50I3oEpyF4aj7wNTHMZNOBu87TCw1fS4i9J3NJdKu9kciuEbNYpkbr4CTbXrnCZNQjlmHqDc3+kSA==, tarball: https://registry.npmmirror.com/@xitanggg/node-insert-text-win32-arm64-msvc/-/node-insert-text-win32-arm64-msvc-1.5.1.tgz}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@xitanggg/node-insert-text-win32-ia32-msvc@1.5.1':
+    resolution: {integrity: sha512-QuCWzJ9GzTjeGlBFNM2GsD7AHXau4aEEgKXfZoRTiDjqcZuj2DRE2q4OuXNBK8Q2NEEIb9CYNe8bltVRp7Q6Zg==, tarball: https://registry.npmmirror.com/@xitanggg/node-insert-text-win32-ia32-msvc/-/node-insert-text-win32-ia32-msvc-1.5.1.tgz}
+    engines: {node: '>= 10'}
+    cpu: [ia32]
+    os: [win32]
+
+  '@xitanggg/node-insert-text-win32-x64-msvc@1.5.1':
+    resolution: {integrity: sha512-HoIovoM2oXPhC7om6EelePafsEdDA2YEC1UFkk+jbGsDQW8XiyyZ7GpedIvQwMqYSGCrpte56IWYYCPdCWCG3g==, tarball: https://registry.npmmirror.com/@xitanggg/node-insert-text-win32-x64-msvc/-/node-insert-text-win32-x64-msvc-1.5.1.tgz}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+
+  '@xitanggg/node-insert-text@1.5.1':
+    resolution: {integrity: sha512-hqUBh65wczIqOuSuqdkYiVoH7YhSJRyl48rnLCGanrjnwh/xO5cBP/T2FU7E5jtvcyGfohDNkq7ezMNxUQTytw==, tarball: https://registry.npmmirror.com/@xitanggg/node-insert-text/-/node-insert-text-1.5.1.tgz}
+    engines: {node: '>= 10'}
 
   '@xmldom/xmldom@0.8.12':
     resolution: {integrity: sha512-9k/gHF6n/pAi/9tqr3m3aqkuiNosYTurLLUtc7xQ9sxB/wm7WPygCv8GYa6mS0fLJEHhqMC1ATYhz++U/lRHqg==, tarball: https://registry.npmmirror.com/@xmldom/xmldom/-/xmldom-0.8.12.tgz}
@@ -3803,6 +3845,33 @@ snapshots:
     dependencies:
       '@webassemblyjs/ast': 1.14.1
       '@xtuc/long': 4.2.2
+
+  '@xitanggg/node-insert-text-darwin-arm64@1.5.1':
+    optional: true
+
+  '@xitanggg/node-insert-text-darwin-universal@1.5.1':
+    optional: true
+
+  '@xitanggg/node-insert-text-darwin-x64@1.5.1':
+    optional: true
+
+  '@xitanggg/node-insert-text-win32-arm64-msvc@1.5.1':
+    optional: true
+
+  '@xitanggg/node-insert-text-win32-ia32-msvc@1.5.1':
+    optional: true
+
+  '@xitanggg/node-insert-text-win32-x64-msvc@1.5.1':
+    optional: true
+
+  '@xitanggg/node-insert-text@1.5.1':
+    optionalDependencies:
+      '@xitanggg/node-insert-text-darwin-arm64': 1.5.1
+      '@xitanggg/node-insert-text-darwin-universal': 1.5.1
+      '@xitanggg/node-insert-text-darwin-x64': 1.5.1
+      '@xitanggg/node-insert-text-win32-arm64-msvc': 1.5.1
+      '@xitanggg/node-insert-text-win32-ia32-msvc': 1.5.1
+      '@xitanggg/node-insert-text-win32-x64-msvc': 1.5.1
 
   '@xmldom/xmldom@0.8.12': {}
 

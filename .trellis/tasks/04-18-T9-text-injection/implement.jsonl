@@ -1,0 +1,4 @@
+{"file": "src/main/ipc/text.handler.ts", "reason": "文本注入核心逻辑"}
+{"file": "src/renderer/floating.ts", "reason": "打字动画 + transcript 监听"}
+{"file": "floating.html", "reason": "添加 transcript 显示区域"}
+{"file": ".trellis/spec/backend/text-input.md", "reason": "文本注入规范参考"}

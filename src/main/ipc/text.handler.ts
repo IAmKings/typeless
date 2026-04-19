@@ -9,6 +9,7 @@
 
 import { ipcMain, systemPreferences } from "electron";
 import { IPC_CHANNELS } from "../../shared/constants/channels";
+import { insertText } from "@xitanggg/node-insert-text";
 
 // ============= Text Injection Result =============
 
@@ -46,13 +47,8 @@ async function doInjectText(text: string): Promise<TextInjectionResult> {
   }
 
   try {
-    // TODO: Use @xitanggg/node-insert-text for actual text injection
-    // import { insertText } from "@xitanggg/node-insert-text";
-    // insertText(text);
-
-    // Placeholder - log the text that would be injected
-    console.log("[Text Injection] Would inject:", text);
-
+    // Use @xitanggg/node-insert-text for actual text injection
+    insertText(text);
     return { success: true };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

@@ -13,6 +13,8 @@ const waveformCanvas = document.getElementById('waveformCanvas') as HTMLCanvasEl
 const cancelHint = document.getElementById('cancelHint') as HTMLElement;
 const actionHint = document.getElementById('actionHint') as HTMLElement;
 const closeBtn = document.getElementById('closeBtn') as HTMLButtonElement;
+const transcriptText = document.getElementById('transcriptText') as HTMLElement;
+const transcriptCursor = document.getElementById('transcriptCursor') as HTMLElement;
 
 // Audio visualization
 const ctxOrNull = waveformCanvas.getContext('2d');
@@ -170,6 +172,86 @@ cancelHint.addEventListener('click', async () => {
 
 // Click anywhere outside cancels (hide window, but don't stop recording)
 // Note: actual click-outside detection happens in main process via hover tracking
+
+// ============= Transcript Typing Animation =============
+
+// Typing state
+let displayedText = '';
+let pendingText = '';
+let typingTimer: ReturnType<typeof setTimeout> | null = null;
+const TYPING_DELAY_MS = 30; // ms per character
+const CLEAR_AFTER_MS = 3000; // clear transcript after 3 seconds
+
+function typeNextChar(): void {
+  if (pendingText.length === 0) {
+    // Done typing, hide cursor and schedule clear
+    transcriptCursor.style.display = 'none';
+    // Schedule clear after 3 seconds
+    setTimeout(clearTranscript, CLEAR_AFTER_MS);
+    return;
+  }
+
+  displayedText += pendingText[0];
+  pendingText = pendingText.slice(1);
+  transcriptText.textContent = displayedText;
+
+  if (pendingText.length > 0) {
+    typingTimer = setTimeout(typeNextChar, TYPING_DELAY_MS);
+  } else {
+    // Done typing, hide cursor and schedule clear
+    transcriptCursor.style.display = 'none';
+    setTimeout(clearTranscript, CLEAR_AFTER_MS);
+  }
+}
+
+function clearTranscript(): void {
+  if (typingTimer) {
+    clearTimeout(typingTimer);
+    typingTimer = null;
+  }
+  displayedText = '';
+  pendingText = '';
+  transcriptText.textContent = '';
+  transcriptCursor.style.display = 'inline';
+}
+
+// Start typing new text
+function startTyping(text: string): void {
+  // Cancel any existing typing
+  if (typingTimer) {
+    clearTimeout(typingTimer);
+    typingTimer = null;
+  }
+
+  // Append new text to existing displayed text
+  pendingText = text;
+  displayedText = transcriptText.textContent || '';
+  transcriptCursor.style.display = 'inline';
+
+  typeNextChar();
+}
+
+// Listen for ASR transcript events
+window.api.asr.onTranscript((result: { text: string; isFinal: boolean }) => {
+  if (!result.text.trim()) {
+    return;
+  }
+
+  if (result.isFinal) {
+    // Final transcript - type it out
+    startTyping(result.text);
+  } else {
+    // Interim transcript - show directly without animation
+    if (typingTimer) {
+      clearTimeout(typingTimer);
+      typingTimer = null;
+    }
+    displayedText = result.text;
+    pendingText = '';
+    transcriptText.textContent = result.text;
+    transcriptCursor.style.display = 'inline';
+  }
+});
 
 // ============= Initialization =============
 
