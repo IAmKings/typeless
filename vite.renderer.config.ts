@@ -13,4 +13,6 @@ export default defineConfig({
       },
     },
   },
+  // Externalize native modules for renderer builds
+  external: ['@xitanggg/node-insert-text'],
 });
