@@ -32,13 +32,8 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Setup pnpm
-        run: |
-          npm install -g pnpm@9
-          pnpm --version
-
       - name: Install dependencies
-        run: pnpm install
+        run: npm ci
 
       - name: Lint
         run: pnpm lint
