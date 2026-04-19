@@ -9,6 +9,7 @@
  */
 
 import { app, Tray, Menu, nativeImage, BrowserWindow, dialog, ipcMain, type NativeImage } from 'electron';
+import path from 'node:path';
 import { IPC_CHANNELS } from '../../shared/constants/channels';
 
 let tray: Tray | null = null;
@@ -24,22 +25,31 @@ const envConfig = {
 };
 
 /**
- * Create tray icon based on status using data URL
- * Returns a 18x18 PNG icon as base64 data URL
+ * Get the correct path to tray assets
+ * Works in both development and production
+ */
+function getAssetPath(filename: string): string {
+  // In production, assets are in the app bundle's Resources folder
+  // In development, assets are in src/assets
+  if (app.isPackaged) {
+    return path.join(process.resourcesPath, 'assets', filename);
+  }
+  return path.join(__dirname, '..', '..', 'assets', filename);
+}
+
+/**
+ * Create tray icon based on status
+ * Returns a 18x18 PNG icon from assets
  */
 function createTrayIcon(status: TrayStatus): NativeImage {
-  // 18x18 PNG icons as base64 data URLs
-  // Green circle (idle), Red circle (recording), Red X (error)
-  const icons: Record<TrayStatus, string> = {
-    idle:
-      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEbSURBVDiNpZM9SwNBEIafvVxiYyG4EHkQL+JFfARBL+LNP4A38OidxI/6E/wB8eLFg4WNFgQLwYVYWKyF2GVhYXe73V2MeMEu6C6z8zwzO7MriP8VVFVnZmZoNBq0223S6TSFQoFsNksmk0FE3LqIiODz+SiVStRqNfL5PKurq2QyGbLZLJqm3VpEVREEgclkolarUavVqFarNBoNut0u3W6XXq9Hv9/HMAzC4TDJZJJcLkc6nSaVSpFMJgmHw4TDYUKhEMFgkEAgQCAQwO/34/P58Pl8eL1ePB4PHo8Ht9uN2+3G5XLhcrlwuVw4HA4cDgcOhwOHw4HD4cDhcLgdLBYLZvP1Nsz/BRHBbreTzWYZDAZks1my2SyZTIZUKkUymSSZTJJKpUin06TTadLpNOl0mnQ6TTqdJp1Ok0qlSKVSpFIpUqkUyWSSRCJBIpEgkUiQSCSIx+PE43Fi8fv9+P1+/H4/fl+A9w0fP8D1Fz7xA5y4n2kAAAAASUVORK5CYII=",
-    recording:
-      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADGSURBVDiN3ZKxDcIwEEXfJoU0lJY6SkoKSR1NJRWkdJTSUEFJQ4lOLbgALbgA3ICb0FRCEokIIokkXmxZ8Z0/G0hR8G5mNOONwPd9vLiD4/G4XK/Xi8fjked5ybKseDwex3H8EJF7Z2dne7/fP3AcJ7nv++m6rhtF0aXv+36apmkURedBECwNw3BJkqRNFEWXTdMsTdN0SZJkYxTl97quW9u2bVVVrapqVVWtqqpVVbWqqlZV1aqqWlVVq6pqVVWtqqpVVbWqqlZV1aqqVlW1qqpWVbWqqg3D8K21dhzHE9M0d4ZhODNNU9u27d9ba2f8l/4A3z9fJ2QAAAAASUVORK5CYII=",
-    error:
-      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACxSURBVDiNtZKxDcAwDEO/LoWUlJY6SkpKSR1NJRWkdJTSUEFJQ4lOLbgA3ICb0FRCEokIIoksZmdWxh4/2Y4TAefZ2Y59QeD7Pl7cwfn5+bper5dnZ2cUi0WKxSKFQoF8Pk8ul8Pv9+9dR0QUi8VyuVwu1+v1cr1eL9fr9XK9Xi/X6/Vyu90u1+v1cr1eL9fr9XK9Xi/X6/Vyu90u1+v1cr1eL9fr9XK9Xi+Xy+VyuVwul8vlcqlUKpVKpVKpVCqVSqVSqVQqlUqlUqlUKpVKpVKpVCqVSqVSqVQqlf4d3wBvQb8mKf5PqwAAAABJRU5ErkJggg==",
+  const iconMap: Record<TrayStatus, string> = {
+    idle: 'tray-idle.png',
+    recording: 'tray-recording.png',
+    error: 'tray-error.png',
   };
 
-  return nativeImage.createFromDataURL(icons[status]);
+  const iconPath = getAssetPath(iconMap[status]);
+  return nativeImage.createFromPath(iconPath);
 }
 
 /**

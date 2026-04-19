@@ -1,0 +1,179 @@
+/**
+ * Floating Window Renderer
+ *
+ * Displays voice input status:
+ * - Microphone state (idle/recording/processing)
+ * - ASR connection state (disconnected/connecting/connected/reconnecting/error)
+ * - Real-time audio waveform
+ */
+
+const micStatusEl = document.getElementById('micStatus') as HTMLElement;
+const asrStatusEl = document.getElementById('asrStatus') as HTMLElement;
+const waveformCanvas = document.getElementById('waveformCanvas') as HTMLCanvasElement;
+const cancelHint = document.getElementById('cancelHint') as HTMLElement;
+const actionHint = document.getElementById('actionHint') as HTMLElement;
+const closeBtn = document.getElementById('closeBtn') as HTMLButtonElement;
+
+// Audio visualization
+const ctxOrNull = waveformCanvas.getContext('2d');
+if (!ctxOrNull) {
+  throw new Error('Failed to get 2D context for waveform canvas');
+}
+const ctx = ctxOrNull; // TypeScript now knows this is CanvasRenderingContext2D
+let audioData: number[] = new Array(64).fill(0);
+
+// ============= Audio Waveform Visualization =============
+
+function resizeCanvas(): void {
+  const rect = waveformCanvas.getBoundingClientRect();
+  waveformCanvas.width = rect.width * window.devicePixelRatio;
+  waveformCanvas.height = rect.height * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+}
+
+function drawWaveform(): void {
+  const width = waveformCanvas.width / window.devicePixelRatio;
+  const height = waveformCanvas.height / window.devicePixelRatio;
+
+  ctx.clearRect(0, 0, width, height);
+
+  const barWidth = width / audioData.length;
+  const barGap = 2;
+
+  for (let i = 0; i < audioData.length; i++) {
+    const value = audioData[i];
+    const barHeight = Math.max(2, value * height * 0.9);
+    const x = i * barWidth;
+    const y = (height - barHeight) / 2;
+
+    // Gradient color based on amplitude
+    const hue = 120 + (value * 60); // Green to yellow to red
+    ctx.fillStyle = `hsla(${hue}, 70%, 60%, 0.8)`;
+
+    ctx.beginPath();
+    ctx.roundRect(x + barGap / 2, y, barWidth - barGap, barHeight, 2);
+    ctx.fill();
+  }
+}
+
+function animate(): void {
+  // Decay audio data
+  audioData = audioData.map(v => v * 0.9);
+  drawWaveform();
+  requestAnimationFrame(animate);
+}
+
+// Start animation loop
+resizeCanvas();
+animate();
+window.addEventListener('resize', resizeCanvas);
+
+// ============= Status Updates =============
+
+function updateMicStatus(status: string): void {
+  micStatusEl.className = 'status-value ' + status;
+
+  switch (status) {
+    case 'recording':
+      micStatusEl.textContent = 'Recording';
+      cancelHint.classList.add('visible');
+      actionHint.style.display = 'none';
+      break;
+    case 'processing':
+      micStatusEl.textContent = 'Processing';
+      break;
+    case 'idle':
+    default:
+      micStatusEl.textContent = 'Idle';
+      cancelHint.classList.remove('visible');
+      actionHint.style.display = 'block';
+      actionHint.textContent = 'Press hotkey to start';
+      break;
+  }
+}
+
+function updateASRStatus(status: string): void {
+  asrStatusEl.className = 'status-value ' + status;
+
+  switch (status) {
+    case 'connected':
+      asrStatusEl.textContent = 'Online';
+      break;
+    case 'connecting':
+      asrStatusEl.textContent = 'Connecting';
+      break;
+    case 'reconnecting':
+      asrStatusEl.textContent = 'Reconnecting';
+      break;
+    case 'error':
+      asrStatusEl.textContent = 'Error';
+      break;
+    case 'disconnected':
+    default:
+      asrStatusEl.textContent = 'Offline';
+      break;
+  }
+}
+
+// ============= Audio Level Updates =============
+
+window.api.audio.onLevel((level: number) => {
+  // Normalize level to 0-1 range
+  const normalizedLevel = Math.min(1, level);
+
+  // Update a few bars randomly around the current level
+  for (let i = 0; i < audioData.length; i++) {
+    const variance = Math.random() * 0.3;
+    audioData[i] = Math.min(1, normalizedLevel + variance - 0.15);
+  }
+});
+
+// ============= ASR Status Updates =============
+
+window.api.asr.onConnectionStatus((detail: { status: string }) => {
+  updateASRStatus(detail.status);
+});
+
+window.api.asr.onError((error: { code: string; message: string }) => {
+  console.error('ASR Error:', error);
+  updateASRStatus('error');
+});
+
+// ============= Recording Status Updates =============
+
+// Listen for audio recording state changes
+window.api.audio.onAudioData(() => {
+  updateMicStatus('recording');
+});
+
+// When recording stops, go back to idle
+window.api.audio.onError(() => {
+  updateMicStatus('idle');
+});
+
+// ============= User Interactions =============
+
+// Close button - hide window
+closeBtn.addEventListener('click', () => {
+  window.api.floatingWindow.hide();
+});
+
+// Click on cancel hint - stop recording
+cancelHint.addEventListener('click', async () => {
+  try {
+    await window.api.audio.stopRecording();
+    updateMicStatus('idle');
+  } catch (err) {
+    console.error('Failed to stop recording:', err);
+  }
+});
+
+// Click anywhere outside cancels (hide window, but don't stop recording)
+// Note: actual click-outside detection happens in main process via hover tracking
+
+// ============= Initialization =============
+
+updateMicStatus('idle');
+updateASRStatus('disconnected');
+
+console.log('[Floating Window] Initialized');
